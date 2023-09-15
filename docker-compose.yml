@@ -1,0 +1,22 @@
+version: '3'
+
+volumes:
+  psqldata:
+
+services:
+  db:
+    image: 'postgres:latest'
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'default_database'
+    volumes:
+      - psqldata:/var/lib/postgresql
+      # copy the csv datasql
+      - ./data:/docker-entrypoint-initdb.d
+      # copy the sql script to create tables
+      - ./sql/create.sql:/docker-entrypoint-initdb.d/create.sql
+      # copy the sql script to fill tables
+      - ./sql/insert.sql:/docker-entrypoint-initdb.d/insert.sql
