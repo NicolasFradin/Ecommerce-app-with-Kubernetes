@@ -15,8 +15,21 @@ services:
     volumes:
       - psqldata:/var/lib/postgresql
       # copy the csv datasql
-      - ./data:/docker-entrypoint-initdb.d
+      - ./data/csv/customers.csv:/docker-entrypoint-initdb.d/customers.csv
+      - ./data/csv/items.csv:/docker-entrypoint-initdb.d/items.csv
+      - ./data/csv/orders.csv:/docker-entrypoint-initdb.d/orders.csv
+      - ./data/csv/products.csv:/docker-entrypoint-initdb.d/products.csv
       # copy the sql script to create tables
       - ./sql/create.sql:/docker-entrypoint-initdb.d/create.sql
       # copy the sql script to fill tables
       - ./sql/insert.sql:/docker-entrypoint-initdb.d/insert.sql
+
+  ecommerce-app:
+    build: ./src
+    container_name: ecommerce-app
+    environment:
+      - DATABASE_URL=postgresql://fastapi_traefik:fastapi_traefik@db:5432/fastapi_traefik
+    depends_on:
+      - db
+    volumes:
+      - ./src/app:/code/app
