@@ -1,11 +1,11 @@
 DROP TABLE if exists Customers;
 CREATE TABLE Customers (
-    customer_id VARCHAR(50) NOT NULL,   --duplicated
+    customer_id UUID NOT NULL,   --duplicated
     customer_unique_id VARCHAR(50),
     customer_zip_code_prefix  VARCHAR(10),
     customer_city   VARCHAR(50),
-    customer_state  VARCHAR(5)
-    --PRIMARY KEY (customer_id)
+    customer_state  VARCHAR(5),
+    PRIMARY KEY (customer_id)
 );
 
 DROP TABLE if exists Items;

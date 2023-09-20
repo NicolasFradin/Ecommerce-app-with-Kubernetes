@@ -3,15 +3,22 @@ version: '3'
 volumes:
   psqldata:
 
+networks:
+  default:
+    name: ecommerce-network
+
 services:
   db:
     image: 'postgres:latest'
+    container_name: 'db'
     ports:
       - 5434:5432
     environment:
-      POSTGRES_USER: 'admin'
+      POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
       POSTGRES_DB: 'default_database'
+      POSTGRES_HOSTNAME: 'localhost'
+      DATABASE_PORT: '5432'
     volumes:
       - psqldata:/var/lib/postgresql
       # copy the csv datasql
@@ -23,13 +30,21 @@ services:
       - ./sql/create.sql:/docker-entrypoint-initdb.d/create.sql
       # copy the sql script to fill tables
       - ./sql/insert.sql:/docker-entrypoint-initdb.d/insert.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d default_database -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
 
   ecommerce-app:
     build: ./src
     container_name: ecommerce-app
-    environment:
-      - DATABASE_URL=postgresql://fastapi_traefik:fastapi_traefik@db:5432/fastapi_traefik
+    #environment:
+      # - DATABASE_URL=postgresql://fastapi_traefik:fastapi_traefik@db:5432/fastapi_traefik
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - ./src/app:/code/app
+
+

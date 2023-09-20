@@ -5,19 +5,7 @@ from fastapi import FastAPI, APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.logger import logger as fastAPI_logger
 
-from app.routes import items, customers
-from app.db import database
-from app.config import settings
-
-import databases
-import sqlalchemy
-
-SQLALCHEMY_DATABASE_URL = settings.db_url #"postgresql://user:password@postgresserver/db"
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()       #Later we will inherit from this class to create each of the database models or classes (the ORM models)
+from app.routes import customers #, items
 
 
 APP_LOG_LEVEL = os.getenv("APP_LOG_LEVEL", "INFO")
@@ -44,13 +32,9 @@ async def health():
     return JSONResponse(content=result, status_code=status)
 
 async def on_start_up() -> None:
-    if not database.is_connected:
-        await database.connect()
     fastAPI_logger.info("on_start_up")
 
 async def on_shutdown() -> None:
-    if database.is_connected:
-        await database.disconnect()
     fastAPI_logger.info("on_shutdown")
 
 
@@ -74,7 +58,7 @@ a HTTP REST-API to access data TODO
                       on_shutdown=[on_shutdown])                # tasks on shutdown
 
     fastapi.include_router(customers.router, prefix="/ecommerce-app")
-    fastapi.include_router(items.router, prefix="/ecommerce-app")
+    #fastapi.include_router(items.router, prefix="/ecommerce-app")
     fastapi.include_router(main_router)
 
     return fastapi
