@@ -72,4 +72,7 @@ if __name__ == '__main__':  # local dev
         server_address="http://localhost:4040",
     )
 
+    os.environ["APP_SETTINGS"] = "local_dev"                           #used for using the right db settings
+    app.config.from_object(os.environ['APP_SETTINGS'])                  #used for using the right db settings
+
     uvicorn.run(create_app(), host="0.0.0.0", port=8000)

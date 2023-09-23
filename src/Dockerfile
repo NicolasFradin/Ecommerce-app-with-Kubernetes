@@ -1,5 +1,7 @@
 FROM python:3.10-slim
 
+LABEL maintainer="NicolasFradin <fradin.nicolas@yahoo.com>"
+
 WORKDIR /code
 
 ENV PYTHONUNBUFFERED=TRUE

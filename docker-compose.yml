@@ -13,6 +13,8 @@ services:
     container_name: 'db'
     ports:
       - 5434:5432
+    env_file:
+      - .env     # path to your .env file
     environment:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
@@ -39,8 +41,11 @@ services:
   ecommerce-app:
     build: ./src
     container_name: ecommerce-app
-    #environment:
-      # - DATABASE_URL=postgresql://fastapi_traefik:fastapi_traefik@db:5432/fastapi_traefik
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_SETTINGS = 'local_docker'
+      #- DATABASE_URL=postgresql://fastapi_traefik:fastapi_traefik@db:5432/fastapi_traefik
     depends_on:
       db:
         condition: service_healthy

@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-#from app.config.settings import settings
+#from app.config.config import settings
 from fastapi_utils.guid_type import setup_guids_postgresql
 
 #POSTGRES_URL = settings.db_url #"postgresql://user:password@postgresserver/db"
