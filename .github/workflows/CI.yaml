@@ -7,13 +7,6 @@ on:
   pull_request:
     branches: "master"
 
-jobs:
-  echo:
-    runs-on: ubuntu-latest
-    steps:
-      - name: description
-          run: |
-            echo --- CI ---
 
   build:
     runs-on: ubuntu-latest
