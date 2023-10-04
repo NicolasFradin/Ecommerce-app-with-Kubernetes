@@ -1,14 +1,14 @@
 from app.db.db import Base
 from sqlalchemy import TIMESTAMP, Column, String, Boolean
 from sqlalchemy.sql import func
-from fastapi_utils.guid_type import GUID, GUID_SERVER_DEFAULT_POSTGRESQL
 from sqlalchemy.orm import relationship
+from uuid import UUID
 
 class CustomerModel(Base):
     __tablename__ = 'customers'                                                     # tells SQLAlchemy to use the provided string as the table name in the database
 
-    customer_id = Column(GUID, primary_key=True,                                  # fields required to add a new record to the database.
-                        server_default=GUID_SERVER_DEFAULT_POSTGRESQL)
+    customer_id = Column(String, primary_key=True,                                  # fields required to add a new record to the database.
+                        )
     customer_unique_id = Column(String, nullable=False)
     customer_zip_code_prefix  = Column(String, nullable=False)
     customer_city   = Column(String, nullable=False)

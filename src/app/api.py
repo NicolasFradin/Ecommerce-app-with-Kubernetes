@@ -58,21 +58,21 @@ a HTTP REST-API to access data TODO
                       on_shutdown=[on_shutdown])                # tasks on shutdown
 
     fastapi.include_router(customers.router, prefix="/ecommerce-app")
-    #fastapi.include_router(items.router, prefix="/ecommerce-app")
+    # fastapi.include_router(items.router, prefix="/ecommerce-app")
     fastapi.include_router(main_router)
 
     return fastapi
 
 if __name__ == '__main__':  # local dev
     import uvicorn
-    import pyroscope
+    #import pyroscope
 
-    pyroscope.configure(
-        application_name="my.python.app",
-        server_address="http://localhost:4040",
-    )
+    # pyroscope.configure(
+    #     application_name="my.python.app",
+    #     server_address="http://localhost:4040",
+    # )
 
-    os.environ["APP_SETTINGS"] = "local_dev"                           #used for using the right db settings
-    app.config.from_object(os.environ['APP_SETTINGS'])                  #used for using the right db settings
+    #os.environ["APP_SETTINGS"] = "local_dev"                           #used for using the right db settings
+    #app.config.from_object(os.environ['APP_SETTINGS'])                  #used for using the right db settings
 
     uvicorn.run(create_app(), host="0.0.0.0", port=8000)

@@ -8,6 +8,23 @@ on:
     branches: "master"
 
 jobs:
+#  CI_lint:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Set up Python 3.10
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: "3.10"
+#
+#      - name: Style guide checker with pycodestyle
+#        run: |
+#          pip install pycodestyle==2.10.0
+#          pycodestyle --max-line-length=120 --ignore=E722,W503,E731 src/
+#
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -19,9 +36,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
 
       - name: Build and push
         uses: docker/build-push-action@v2

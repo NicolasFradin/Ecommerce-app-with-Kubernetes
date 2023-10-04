@@ -1,12 +1,10 @@
 #### NOT USED YET
-
 import typing as t
+from sqlalchemy.ext.declarative import as_declarative, declared_attr, declarative_base
 
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
 
 
 class_registry: t.Dict = {}
-
 
 @as_declarative(class_registry=class_registry)
 class Base:

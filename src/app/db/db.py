@@ -1,30 +1,32 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-#from app.config.config import settings
-from fastapi_utils.guid_type import setup_guids_postgresql
-
-#POSTGRES_URL = settings.db_url #"postgresql://user:password@postgresserver/db"
-#POSTGRES_URL = f"postgresql://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOSTNAME}:{settings.DATABASE_PORT}/{settings.POSTGRES_DB}"
-POSTGRES_URL = "postgresql://postgres:postgres@db:5432/default_database"
-#POSTGRES_URL = "postgresql://postgres:postgres@localhost:5434/default_database"
+from sqlalchemy.orm import scoped_session, sessionmaker
+from functools import lru_cache
+from app.config.config import get_settings
 
 engine = create_engine(
-    POSTGRES_URL, echo=True
+    get_settings().POSTGRES_URL, echo=True, pool_pre_ping=True
 )
-setup_guids_postgresql(engine)  #Install the pgcrypto extension of not installed on the Postgres instance.Used for generate the UUIDs.
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
+@lru_cache
+def create_session() -> scoped_session:
 
-def get_db():
+    Session = scoped_session(
+        sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    )
 
+    return Session
+
+def get_session():
     """
+    We will use SQLAlchemy's scoped_session for this, like described in its documentation, and create a dependency.
+    This dependency will take care of creating a session at the beginning of a web request and close it at the end.
     function that will create a new database session and close the session after the operation has ended.
     """
-    db = SessionLocal()
+    Session = create_session()
     try:
-        yield db
+        yield Session
     finally:
-        db.close()
+        Session.close()
