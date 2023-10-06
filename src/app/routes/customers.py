@@ -1,13 +1,16 @@
+from typing import List, Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 import sqlalchemy
 from sqlalchemy.orm import Session
 
 from app.db.db import get_session
 from app.models.customers import CustomerModel
-from app.schemas.customers import CustomerSchema
+from app.schemas.customers import CustomerSchema, CustomerCreate
+from app.services.customers import CustomerService, get_customer_service
 
 from fastapi.logger import logger as fastAPI_logger
-from uuid import UUID
+from pydantic.types import UUID4
 
 router = APIRouter(
     prefix="/customers",
@@ -17,26 +20,28 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=list[CustomerSchema])
-def read_customers(skip: int = 0, limit: int = 100, db: Session = Depends(get_session)):
+def list_customers(skip: int = 0, limit: int = 100, customer_service: CustomerService = Depends(get_customer_service)) -> List[CustomerModel]:
     # customers = crud.get_customers(db, skip=skip, limit=limit)
-    customers = db.query(CustomerModel).offset(skip).limit(limit).all()
+    customers = customer_service.list(skip=skip, limit=limit)
     return customers
 
 
 @router.get("/{customer_id}", response_model=CustomerSchema)
-def read_customers(customer_id: UUID, db: Session = Depends(get_session)):
-    # db_customer = crud.get_customer(db, user_id=user_id)
-    customer = db.query(CustomerModel).filter(CustomerModel.customer_id == customer_id).first()
-
-    if customer is None:
-        raise HTTPException(status_code=404, detail="Customer not found")
+def read_customers(customer_id: UUID4, customer_service: CustomerService = Depends(get_customer_service)) -> Optional[CustomerModel]:
+    customer = customer_service.get(customer_id)
     return customer
-#
-#
-# @router.post("/customers/", response_model=schemas.Customer)
-# def create_customer(customer: schemas.UserCreate, db: Session = Depends(get_db)):
-#     db_customer = crud.get_customer_by_email(db, email=customer.email)
-#     if db_customerr:
-#         raise HTTPException(status_code=400, detail="Email already registered")
-#     return crud.create_customer(db=db, customer=customer)
+
+@router.delete("/{customer_id}", status_code=204)
+def delete_customers(customer_id: UUID4, customer_service: CustomerService = Depends(get_customer_service)) -> None:
+    customer_service.delete(customer_id)
+
+
+@router.post(
+    "/",
+    response_model=Store,
+    status_code=201,
+    responses={409: {"description": "Conflict Error"}},
+)
+def create_customer(customer: CustomerCreate, customer_service: CustomerService = Depends(get_customer_service)) -> CustomerModel:
+    return customer_service.create(customer)
 

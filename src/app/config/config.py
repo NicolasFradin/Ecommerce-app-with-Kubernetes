@@ -36,12 +36,8 @@ class Settings(BaseSettings):
 @lru_cache                          #helps in reducing the execution time of the function by using memoization technique.
 def get_settings() -> Settings:
 
-    print(os.path.exists('../../.env'))
-    print(os.path.exists('config/.env'))
-    print(os. getcwd())
-
     settings = Settings()
-    print("settings->>>>>:", settings.model_dump())
+
     return settings
 
 

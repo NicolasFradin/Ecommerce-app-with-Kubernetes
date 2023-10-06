@@ -1,5 +1,4 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from functools import lru_cache
 from app.config.config import get_settings
@@ -8,7 +7,6 @@ engine = create_engine(
     get_settings().POSTGRES_URL, echo=True, pool_pre_ping=True
 )
 
-Base = declarative_base()
 
 @lru_cache
 def create_session() -> scoped_session:
