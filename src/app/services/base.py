@@ -9,10 +9,10 @@ from app.models.base import Base
 
 ModelType = TypeVar("ModelType", bound=Base)
 SchemaType = TypeVar("SchemaType", bound=BaseModel)
-#CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
+CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 #UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
-class BaseService(Generic[ModelType, SchemaType]):        # Our BaseService class uses a generic type to define the type of data that the service can handle.
+class BaseService(Generic[ModelType, SchemaType, CreateSchemaType]):        # Our BaseService class uses a generic type to define the type of data that the service can handle.
     def __init__(self, model: Type[ModelType], db_session: Session):
         self.model = model
         self.db_session = db_session
@@ -52,8 +52,3 @@ class BaseService(Generic[ModelType, SchemaType]):        # Our BaseService clas
     #         setattr(db_obj, column, value)
     #     self.db_session.commit()
     #     return db_obj
-    #
-    # def delete(self, id: Any) -> None:
-    #     db_obj = self.db_session.query(self.model).get(id)
-    #     self.db_session.delete(db_obj)
-    #     self.db_session.commit()
