@@ -1,6 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException
+from typing import List, Optional
 
-# from ..dependencies import get_token_header
+from fastapi import APIRouter, Depends, HTTPException, status, Response
+import sqlalchemy
+from sqlalchemy.orm import Session
+
+from app.db.db import get_session
+from app.models.items import ItemModel
+from app.schemas.items import Item, ItemCreate, ItemUpdate
+from app.services.items import ItemService, get_item_service
+
+from fastapi.logger import logger as fastAPI_logger
+from pydantic.types import UUID
 
 router = APIRouter(
     prefix="/items",
@@ -9,30 +19,38 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-
-fake_items_db = {"plumbus": {"name": "Plumbus"}, "gun": {"name": "Portal Gun"}}
-
-
-@router.get("/")
-async def read_items():
-    return fake_items_db
+@router.get("/", response_model=list[Item])
+def list_items(skip: int = 0, limit: int = 100, item_service: ItemService = Depends(get_item_service)) -> List[ItemModel]:
+    items = item_service.list(skip=skip, limit=limit)
+    return items
 
 
-@router.get("/{item_id}")
-async def read_item(item_id: str):
-    if item_id not in fake_items_db:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return {"name": fake_items_db[item_id]["name"], "item_id": item_id}
+@router.get("/{item_id}", response_model=Item)
+def read_item(item_id: UUID, item_service: ItemService = Depends(get_item_service)) -> Optional[ItemModel]:
+    item = item_service.get(item_id)
+    return item
 
-
-@router.put(
+@router.delete(
     "/{item_id}",
-    tags=["custom"],
-    responses={403: {"description": "Operation forbidden"}},
+    status_code=204,        #With 204 the response must not have a body.
 )
-async def update_item(item_id: str):
-    if item_id != "plumbus":
-        raise HTTPException(
-            status_code=403, detail="You can only update the item: plumbus"
-        )
-    return {"item_id": item_id, "name": "The great Plumbus"}
+def delete_item(item_id: UUID, item_service: ItemService = Depends(get_item_service)) -> None:
+    item_service.delete(item_id)
+
+
+@router.post(
+    "/",
+    response_model=Item,
+    status_code=201,
+    responses={409: {"description": "Conflict Error"}},
+)
+def create_item(item: ItemCreate, item_service: ItemService = Depends(get_item_service)) -> ItemModel:
+    return item_service.create(item)
+
+@router.patch(
+    "/{item_id}",
+    response_model=Item,
+    status_code=200
+)
+def update_item(item_id: UUID, item: ItemUpdate, item_service: ItemService = Depends(get_item_service)) -> ItemModel:
+    return item_service.update(item_id, item)

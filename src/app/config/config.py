@@ -28,11 +28,6 @@ class Settings(BaseSettings):
     # POSTGRES_URL = "postgresql://postgres:postgres@localhost:5434/default_database"
 
 
-
-#class DockerConfig(Base):
-#    db_url: str = Field(..., env='APP_SETTINGS')
-
-
 @lru_cache                          #helps in reducing the execution time of the function by using memoization technique.
 def get_settings() -> Settings:
 

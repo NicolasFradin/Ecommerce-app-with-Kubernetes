@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.db.db import get_session
 from app.models.customers import CustomerModel
-from app.schemas.customers import Customer, CustomerCreate
+from app.schemas.customers import Customer, CustomerCreate, CustomerUpdate
 from app.services.customers import CustomerService, get_customer_service
 
 from fastapi.logger import logger as fastAPI_logger
@@ -21,20 +21,20 @@ router = APIRouter(
 
 @router.get("/", response_model=list[Customer])
 def list_customers(skip: int = 0, limit: int = 100, customer_service: CustomerService = Depends(get_customer_service)) -> List[CustomerModel]:
-    # customers = crud.get_customers(db, skip=skip, limit=limit)
     customers = customer_service.list(skip=skip, limit=limit)
     return customers
 
-
 @router.get("/{customer_id}", response_model=Customer)
-def read_customers(customer_id: UUID, customer_service: CustomerService = Depends(get_customer_service)) -> Optional[CustomerModel]:
+def read_customer(customer_id: UUID, customer_service: CustomerService = Depends(get_customer_service)) -> Optional[CustomerModel]:
     customer = customer_service.get(customer_id)
     return customer
 
-@router.delete("/{customer_id}", status_code=204)
-def delete_customers(customer_id: UUID, customer_service: CustomerService = Depends(get_customer_service)) -> None:
+@router.delete(
+    "/{customer_id}",
+    status_code=204,        #With 204 the response must not have a body.
+)
+def delete_customer(customer_id: UUID, customer_service: CustomerService = Depends(get_customer_service)) -> None:
     customer_service.delete(customer_id)
-
 
 @router.post(
     "/",
@@ -43,6 +43,12 @@ def delete_customers(customer_id: UUID, customer_service: CustomerService = Depe
     responses={409: {"description": "Conflict Error"}},
 )
 def create_customer(customer: CustomerCreate, customer_service: CustomerService = Depends(get_customer_service)) -> CustomerModel:
-    print(customer.model_dump())
     return customer_service.create(customer)
 
+@router.patch(
+    "/{customer_id}",
+    response_model=Customer,
+    status_code=200
+)
+def update_customer(customer_id: UUID, customer: CustomerUpdate, customer_service: CustomerService = Depends(get_customer_service)) -> CustomerModel:
+    return customer_service.update(customer_id, customer)

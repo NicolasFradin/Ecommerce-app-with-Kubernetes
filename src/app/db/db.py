@@ -4,7 +4,9 @@ from functools import lru_cache
 from app.config.config import get_settings
 
 engine = create_engine(
-    get_settings().POSTGRES_URL, echo=True, pool_pre_ping=True
+    get_settings().POSTGRES_URL,
+    echo=True,
+    pool_pre_ping=True
 )
 
 

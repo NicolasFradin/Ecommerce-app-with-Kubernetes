@@ -5,7 +5,7 @@ from fastapi import FastAPI, APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.logger import logger as fastAPI_logger
 
-from app.routes import customers #, items
+from app.routes import customers, orders #, items
 
 
 APP_LOG_LEVEL = os.getenv("APP_LOG_LEVEL", "INFO")
@@ -58,7 +58,8 @@ a HTTP REST-API to access data TODO
                       on_shutdown=[on_shutdown])                # tasks on shutdown
 
     fastapi.include_router(customers.router, prefix="/ecommerce-app")
-    # fastapi.include_router(items.router, prefix="/ecommerce-app")
+    fastapi.include_router(orders.router, prefix="/ecommerce-app")
+    #fastapi.include_router(items.router, prefix="/ecommerce-app")
     fastapi.include_router(main_router)
 
     return fastapi

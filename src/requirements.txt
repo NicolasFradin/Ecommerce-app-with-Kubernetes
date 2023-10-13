@@ -4,3 +4,5 @@ pydantic-settings
 uvicorn
 SQLAlchemy
 psycopg2-binary
+asyncio
+asyncpg
