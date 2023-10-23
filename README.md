@@ -34,8 +34,13 @@ Don't forget to create your own .env file with the database credentials and your
 ```docker compose up --build```
 
 
-![alt text](https://github.com/NicolasFradin/Ecommerce-app-with-Kubernetes/api-screenshot.png)
+![alt text](https://github.com/NicolasFradin/Ecommerce-app-with-Kubernetes/blob/master/api-screenshot.png)
 
+# Remaining steps: 
+- Asynchronous requests 
+- Alembic use
+- Frontend app 
+- Unit tests 
 
 # Found my detailled process through my Medium articles here:
 
