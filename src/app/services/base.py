@@ -19,7 +19,7 @@ class BaseService(Generic[ModelType, SchemaType, CreateSchemaType]):        # Ou
 
     def get(self, id: Any) -> Optional[ModelType]:
         obj: Optional[ModelType] = self.db_session.query(self.model).get(id)
-        print(type(obj))
+        print(obj)
         if obj is None:
             raise HTTPException(status_code=404, detail="Not Found")
         return obj

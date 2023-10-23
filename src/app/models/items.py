@@ -1,5 +1,6 @@
 from app.models.base import Base
-from sqlalchemy import TIMESTAMP, Column, String, Boolean, Integer, Double
+
+from sqlalchemy import TIMESTAMP, Column, String, Boolean, Integer, Double, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from uuid import UUID
@@ -7,7 +8,7 @@ from uuid import UUID
 class ItemModel(Base):
     __tablename__ = 'items'                                                     # tells SQLAlchemy to use the provided string as the table name in the database
 
-    order_id = Column(String, nullable=False)
+    order_id = Column(String, ForeignKey("orders.order_id"), nullable=False)
     order_item_id = Column(Integer, nullable=False, primary_key=True)
     product_id = Column(String, nullable=False)
     seller_id = Column(String, nullable=False)
@@ -19,3 +20,6 @@ class ItemModel(Base):
                         nullable=False, server_default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True),
                         default=None, onupdate=func.now())
+
+    #Relationship
+    orders = relationship("OrderModel", back_populates="items")

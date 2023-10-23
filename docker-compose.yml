@@ -38,18 +38,19 @@ services:
       timeout: 5s
       retries: 10
 
-#  ecommerce-app:
-#    build: ./src
-#    container_name: ecommerce-app
-#    ports:
-#      - "8000:8000"
-#    environment:
-#      - APP_SETTINGS = 'local_docker'
-#      #- DATABASE_URL=postgresql://fastapi_traefik:fastapi_traefik@db:5432/fastapi_traefik
-#    depends_on:
-#      db:
-#        condition: service_healthy
-#    volumes:
-#      - ./src/app:/code/app
+  ecommerce-app:
+    build: ./src
+    container_name: ecommerce-app
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_SETTINGS = 'local_docker'
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./src/app:/code/app
 
 
