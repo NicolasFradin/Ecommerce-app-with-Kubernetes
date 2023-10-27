@@ -35,7 +35,7 @@ This file is used in both Dockerfile and CICD and ** must not be ** commited wit
 
 You must define: 
 
-[Postgres] (same as in the Dockerfile)
+[Postgres] (same as in the docker-compose.yml)
 - POSTGRES_USER =  'postgres'
 - POSTGRES_PASSWORD =  'postgres'
 - POSTGRES_DB =  'default_database'
@@ -53,7 +53,7 @@ Use the following command to test locally the CICD with your secrets:
 
 '''act –secret-file .env'''
 
-Else add your dockerhub secrets directly in you Github repository.
+Else add your dockerhub's secrets directly in you Github repository.
 
 # Launch FastAPI application locally without Docker:
 
