@@ -66,7 +66,9 @@ Else add your dockerhub's secrets directly in you Github repository.
 - To launch the app through Docker make:
 
 ```docker compose down```
+
 ```docker volume rm ecommerce-app-with-kubernetes_psqldata```
+
 ```docker compose up --build```
 
 Open the application with the following url: https://localhost:8000
