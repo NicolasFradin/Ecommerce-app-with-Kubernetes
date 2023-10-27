@@ -25,7 +25,7 @@ I am using a macOS env, feel free to find the equivalent commands for windows.
 
 - Install Act (local run of Github actions)
 
-'''brew install act'''
+```brew install act```
 
 
 # Environment variables
@@ -51,7 +51,7 @@ You must define:
 
 Use the following command to test locally the CICD with your secrets: 
 
-'''act –secret-file .env'''
+```act –secret-file .env```
 
 Else add your dockerhub's secrets directly in you Github repository.
 
